@@ -25,3 +25,11 @@
 ### 10. Change school topics
 
 ### 11. Where can I learn Python?
+
+### 12. Log stats
+
+### 13. Regex filter
+
+### 14. Top students
+
+### 15. Log stats - new version
