@@ -9,3 +9,5 @@
 ### 2. Insert document
 
 ### 3. All documents
+
+### 4. All matches
