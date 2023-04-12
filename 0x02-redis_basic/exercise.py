@@ -10,27 +10,23 @@ from typing import Union, Callable, Any
 
 def replay(fn: Callable) -> None:
     """
+    function prints out the number of times a function is called
+    and the history of its inputs and outputs
     """
     if fn is None or not hasattr(fn, '__self__'):
         return
-    redis_store = getattr(fn.__self__, '_redis', None)
-    if not isinstance(redis_store, redis.Redis):
+    fn_name = fn.__qualname__
+    cache = getattr(fn.__self__, '_redis', None)
+    if not isinstance(cache, redis.Redis):
         return
-    fxn_name = fn.__qualname__
-    in_key = '{}:inputs'.format(fxn_name)
-    out_key = '{}:outputs'.format(fxn_name)
-    fxn_call_count = 0
-    if redis_store.exists(fxn_name) != 0:
-        fxn_call_count = int(redis_store.get(fxn_name))
-    print('{} was called {} times:'.format(fxn_name, fxn_call_count))
-    fxn_inputs = redis_store.lrange(in_key, 0, -1)
-    fxn_outputs = redis_store.lrange(out_key, 0, -1)
-    for fxn_input, fxn_output in zip(fxn_inputs, fxn_outputs):
-        print('{}(*{}) -> {}'.format(
-            fxn_name,
-            fxn_input.decode("utf-8"),
-            fxn_output,
-        ))
+    called = 0
+    if cache.exists(fn_name) != 0:
+        called = int(cache.get(fn_name))
+    print(f'{fn_name} was called {called} times:')
+    inputs = cache.lrange(f'{fn_name}:inputs', 0, -1)
+    outputs = cache.lrange(f'{fn_name}:outputs', 0, -1)
+    for input, output in zip(inputs, outputs):
+        print(f'{fn_name}(*{input.decode("utf-8")}) -> {output}')
 
 
 def call_history(method: Callable) -> Callable:
