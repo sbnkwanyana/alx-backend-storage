@@ -9,7 +9,7 @@ from typing import Callable
 from functools import wraps
 
 
-cache = redis.Redis()
+store = redis.Redis()
 
 
 def data_cacher(method: Callable) -> Callable:
@@ -21,14 +21,16 @@ def data_cacher(method: Callable) -> Callable:
         """
         function returns saves requests and returns cached requests
         """
-        cache.incr(f'count:{url}')
-        result = cache.get(f'result:{url}')
-        if result:
-            return result.decode('utf-8')
-        result = method(url)
-        cache.set(f'count:{url}', 0)
-        cache.setex(f'result:{url}', 10, result)
-        return result
+        def wrapper(url):
+            data = store.get(url)
+            if data:
+                return data.decode("utf-8")
+            count = f"count: {url}"
+            html = method(url)
+            store.incr(count)
+            store.set(url, html)
+            store.expire(url, 10)
+            return html
     return invoker
 
 
