@@ -16,7 +16,7 @@ def url_cacher(method):
     decorator function caches web requests
     """
     @wraps(method)
-    def invoker(url) -> str:
+    def invoker(url):
         """
         function returns saves requests and returns cached requests
         """
