@@ -5,14 +5,13 @@ that caches requests in redis cache
 """
 import redis
 import requests
-from typing import Callable
 from functools import wraps
 
 
 store = redis.Redis()
 
 
-def data_cacher(method: Callable) -> Callable:
+def url_cacher(method):
     """
     decorator function caches web requests
     """
@@ -33,7 +32,7 @@ def data_cacher(method: Callable) -> Callable:
     return invoker
 
 
-@data_cacher
+@url_cacher
 def get_page(url: str) -> str:
     """
     function gets html content
