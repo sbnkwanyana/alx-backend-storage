@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Module defines class Cache
+Module defines class Cache that interacts with a redis cache
 """
 import redis
 import uuid
@@ -9,7 +9,7 @@ from typing import Union
 
 class Cache:
     """
-    Class Cache
+    Class Cache is used to interact with a redis cache
     """
 
     def __init__(self) -> None:
