@@ -24,7 +24,7 @@ def data_cacher(method: Callable) -> Callable:
         data = store.get(url)
         if data:
             return data.decode("utf-8")
-        count = f"count: {url}"
+        count = f"count:{url}"
         html = method(url)
         store.incr(count)
         store.set(url, html)
