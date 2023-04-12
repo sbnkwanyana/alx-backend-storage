@@ -21,16 +21,15 @@ def data_cacher(method: Callable) -> Callable:
         """
         function returns saves requests and returns cached requests
         """
-        def wrapper(url):
-            data = store.get(url)
-            if data:
-                return data.decode("utf-8")
-            count = f"count: {url}"
-            html = method(url)
-            store.incr(count)
-            store.set(url, html)
-            store.expire(url, 10)
-            return html
+        data = store.get(url)
+        if data:
+            return data.decode("utf-8")
+        count = f"count: {url}"
+        html = method(url)
+        store.incr(count)
+        store.set(url, html)
+        store.expire(url, 10)
+        return html
     return invoker
 
 
