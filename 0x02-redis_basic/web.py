@@ -20,7 +20,7 @@ def url_cacher(method):
         """
         function returns saves requests and returns cached requests
         """
-        data = store.get(url)
+        data = store.get(f"key:{url}")
         if data:
             return data.decode("utf-8")
         count = f"count:{url}"
