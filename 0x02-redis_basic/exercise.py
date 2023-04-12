@@ -8,6 +8,24 @@ import uuid
 from typing import Union, Callable, Any
 
 
+def call_history(method: Callable) -> Callable:
+    """
+    decorator function stores the inputs and outputs of a function
+    """
+    @wraps(method)
+    def invoker(self, *args, **kwargs) -> Any:
+        """
+        """
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(f'{method.__qualname__}:inputs', str(args))
+        output = method(self, *args, **kwargs)
+        if isinstance(self._redis, redis.Redis):
+            output_keys = f'{method.__qualname__}:outputs'
+            self._redis.rpush(output_keys, str(args), output)
+        return output
+    return invoker
+
+
 def count_calls(method: Callable) -> Callable:
     """
     function counts the number of times a function is called
