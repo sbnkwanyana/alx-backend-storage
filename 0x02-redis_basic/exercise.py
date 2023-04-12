@@ -22,6 +22,6 @@ class Cache:
         """
         Generates a unique id and stores data to redis cache
         """
-        key = uuid.uuid4()
+        key = str(uuid.uuid4())
         self._redis.set(key, data)
         return key
